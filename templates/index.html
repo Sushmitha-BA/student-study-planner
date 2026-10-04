@@ -1,12 +1,74 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>{{ project_name }}</title>
 </head>
 
 <body>
-    <h1>{{ project_name}}</h1>
+
+    <h1>{{ project_name }}</h1>
+
     <p>{{ tagline }}</p>
-    <p>Welcome to your Student Study Planner!</p>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <h2>Add Study Task</h2>
+
+    <form method="POST">
+
+        <label>Task:</label>
+        <input type="text" name="title">
+
+        <br><br>
+
+        <label>Subject:</label>
+        <select name="subject">
+
+            {% for subject in subjects %}
+                <option value="{{ subject }}">{{ subject }}</option>
+            {% endfor %}
+
+        </select>
+
+        <br><br>
+
+        <label>Due Date:</label>
+        <input type="date" name="due_date">
+
+        <br><br>
+
+        <button type="submit">Add Task</button>
+
+    </form>
+
+    <h2>My Tasks</h2>
+
+    {% if tasks %}
+
+        {% for task in tasks %}
+
+            <div>
+                <strong>{{ task.title }}</strong>
+                - {{ task.subject }}
+
+                {% if task.due_date %}
+                    - Due: {{ task.due_date }}
+                {% endif %}
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No tasks yet.</p>
+
+    {% endif %}
+
 </body>
+
 </html>
