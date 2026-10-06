@@ -1,9 +1,7 @@
 [
     {
-        "id": 1,
-        "title": "Complete Python pratice",
-        "subject": "Python",
-        "due_date": "2026-10-13",
-        "done": false
+        "id": 2,
+        "title": "Test Python task",
+        ...
     }
 ]

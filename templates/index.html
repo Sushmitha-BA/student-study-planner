@@ -1,73 +1,208 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>{{ project_name }}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
 
-    <h1>{{ project_name }}</h1>
+    <header class="top-bar">
 
-    <p>{{ tagline }}</p>
+        <img src="{{ url_for('static', filename='images/logo.svg') }}"
+             alt="Study Planner logo"
+             class="logo">
 
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
+        <div>
+            <h1>{{ project_name }}</h1>
+            <p class="tagline">Plan your subjects. Finish your tasks.</p>
+        </div>
 
-    <h2>Add Study Task</h2>
+    </header>
 
-    <form method="POST">
+    <main class="container">
 
-        <label>Task:</label>
-        <input type="text" name="title">
+        <section class="stats">
 
-        <br><br>
-
-        <label>Subject:</label>
-        <select name="subject">
-
-            {% for subject in subjects %}
-                <option value="{{ subject }}">{{ subject }}</option>
-            {% endfor %}
-
-        </select>
-
-        <br><br>
-
-        <label>Due Date:</label>
-        <input type="date" name="due_date">
-
-        <br><br>
-
-        <button type="submit">Add Task</button>
-
-    </form>
-
-    <h2>My Tasks</h2>
-
-    {% if tasks %}
-
-        {% for task in tasks %}
-
-            <div>
-                <strong>{{ task.title }}</strong>
-                - {{ task.subject }}
-
-                {% if task.due_date %}
-                    - Due: {{ task.due_date }}
-                {% endif %}
+            <div class="stat-box">
+                <span class="stat-number">{{ total }}</span>
+                Total
             </div>
 
-            <hr>
+            <div class="stat-box">
+                <span class="stat-number">{{ pending_count }}</span>
+                Pending
+            </div>
 
-        {% endfor %}
+            <div class="stat-box">
+                <span class="stat-number">{{ done_count }}</span>
+                Done
+            </div>
 
-    {% else %}
+        </section>
 
-        <p>No tasks yet.</p>
 
-    {% endif %}
+        <section class="card">
+
+            <p>Progress: {{ percent }}%</p>
+
+            <div class="progress-bar">
+                <div class="progress-fill"
+                     style="width: {{ percent }}%;">
+                </div>
+            </div>
+
+        </section>
+
+
+        <section class="card">
+
+            <h2>Add a study task</h2>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST" action="/">
+
+                <label for="title">Task title</label>
+
+                <input type="text"
+                       id="title"
+                       name="title"
+                       placeholder="Example: Revise Python lists">
+
+
+                <label for="subject">Subject</label>
+
+                <select id="subject" name="subject">
+
+                    {% for subject in subjects %}
+
+                        <option value="{{ subject }}">
+                            {{ subject }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <label for="due_date">Due date</label>
+
+                <input type="date"
+                       id="due_date"
+                       name="due_date">
+
+
+                <button type="submit" class="btn btn-primary">
+                    Add Task
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <section class="card">
+
+            <h2>My tasks</h2>
+
+            {% if tasks %}
+
+                {% for task in tasks %}
+
+                    <div class="task {% if task.done %}task-done{% endif %}">
+
+                        <div class="task-info">
+
+                            <span class="task-title">
+                                {{ task.title }}
+                            </span>
+
+                            <span class="badge">
+                                {{ task.subject }}
+                            </span>
+
+                            <span class="due">
+
+                                {% if task.due_date %}
+
+                                    Due: {{ task.due_date }}
+
+                                {% else %}
+
+                                    No due date
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="task-actions">
+
+                            <form method="POST"
+                                  action="/complete/{{ task.id }}">
+
+                                <button type="submit"
+                                        class="btn btn-success">
+
+                                    {% if task.done %}
+                                        Undo
+                                    {% else %}
+                                        Done
+                                    {% endif %}
+
+                                </button>
+
+                            </form>
+
+
+                            <a href="/edit/{{ task.id }}"
+                               class="btn btn-edit">
+                                Edit
+                            </a>
+
+
+                            <form method="POST"
+                                  action="/delete/{{ task.id }}"
+                                  onsubmit="return confirm('Delete this task?');">
+
+                                <button type="submit"
+                                        class="btn btn-danger">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p>No tasks yet. Add your first task above.</p>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+        Built with Python and Flask | Student Study Planner
+    </footer>
 
 </body>
 
